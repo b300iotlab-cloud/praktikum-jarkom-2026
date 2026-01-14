@@ -1,6 +1,6 @@
 # 👋 Selamat Datang di Praktikum Jaringan Komputer
 
-Praktikum ini merupakan bagian dari mata kuliah di **Departemen Teknik Komputer - Institut Teknologi Sepuluh Nopember (ITS)** yang bertujuan untuk memberikan pemahaman praktis mengenai konsep dasar dan implementasi jaringan komputer.
+Praktikum ini merupakan bagian dari mata kuliah Jaringan Komputer yang bertujuan untuk memberikan pemahaman praktis mengenai konsep dasar dan implementasi jaringan komputer.
 
 ---
 
