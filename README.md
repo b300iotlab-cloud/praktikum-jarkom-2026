@@ -49,9 +49,6 @@ Nah, untuk melakukan praktikum ini, kamu perlu menginstal aplikasi berikut:
 
 - **Wireshark**  
   Alat analisis paket jaringan yang digunakan untuk memantau dan mempelajari lalu lintas jaringan.
-
-- **Aplikasi Ubiquitous?**  
-
   
 ---
 ## Bagaimana cara membaca modul dan buat laporannya??
