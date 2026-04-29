@@ -28,10 +28,7 @@ Dalam modul-modul praktikum ini, kamu akan mempelajari dan mengimplementasikan b
 - Connection Tracking
 - Proteksi router dari akses luar
 
-### 5. **VPN & QoS**
-- Tunnel (PPTP, L2TP, EOIP)
-- Simple Queue & Queue Tree
-- Bandwidth Limiting dan Prioritas Traffic
+
 
 ---
 
