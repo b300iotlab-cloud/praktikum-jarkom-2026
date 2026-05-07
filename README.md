@@ -1,17 +1,20 @@
 <div align="center">
   <img src="header.png" alt="Header Praktikum Jarkom" width="100%" style="border-radius: 10px;">
   <br><br>
+
   <a href="https://git.io/typing-svg">
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=28&pause=1000&color=007BFF&center=true&vCenter=true&width=600&lines=👋+Selamat+Datang+di+Praktikum;Jaringan+Komputer+2026;Konfigurasi+Routing+%26+Switching;Explore+MikroTik,+Cisco,+Huawei!" alt="Typing SVG" />
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&amp;weight=700&amp;size=28&amp;pause=1000&amp;color=007BFF&amp;center=true&amp;vCenter=true&amp;width=600&amp;lines=Selamat+Datang+di+Praktikum;Jaringan+Komputer+2026;Routing+dan+Switching;Explore+MikroTik,+Cisco,+Huawei" alt="Typing SVG" />
   </a>
+
   <p>
     <b>Praktikum ini merupakan bagian dari mata kuliah Jaringan Komputer yang bertujuan untuk memberikan pemahaman praktis mengenai konsep dasar dan implementasi jaringan komputer.</b>
   </p>
+
   <p>
-    <img src="https://img.shields.io/badge/Cisco-1BA0D7?style=for-the-badge&logo=cisco&logoColor=white" alt="Cisco">
-    <img src="https://img.shields.io/badge/MikroTik-222222?style=for-the-badge&logo=mikrotik&logoColor=white" alt="MikroTik">
-    <img src="https://img.shields.io/badge/Huawei-FF0000?style=for-the-badge&logo=huawei&logoColor=white" alt="Huawei">
-    <img src="https://img.shields.io/badge/IPv4%20%26%20IPv6-4CAF50?style=for-the-badge&logo=ip&logoColor=white" alt="IP">
+    <img src="https://img.shields.io/badge/Cisco-1BA0D7?style=for-the-badge&amp;logo=cisco&amp;logoColor=white" alt="Cisco">
+    <img src="https://img.shields.io/badge/MikroTik-222222?style=for-the-badge&amp;logo=mikrotik&amp;logoColor=white" alt="MikroTik">
+    <img src="https://img.shields.io/badge/Huawei-FF0000?style=for-the-badge&amp;logo=huawei&amp;logoColor=white" alt="Huawei">
+    <img src="https://img.shields.io/badge/IPv4_dan_IPv6-4CAF50?style=for-the-badge&amp;logo=ip&amp;logoColor=white" alt="IP">
   </p>
 </div>
 
