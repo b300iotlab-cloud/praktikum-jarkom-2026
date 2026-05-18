@@ -34,7 +34,7 @@ Dalam modul-modul praktikum ini, kamu akan mempelajari dan mengimplementasikan b
 
 - Konfigurasi **routing statis** dan **routing dinamis** IPv6
 
-### 3. **Wireless LAN **
+### 3. **Wireless LAN**
 
 - Konfigurasi Access Point dan Station
 - Point to Point, Point to Multipoint, Wireless Bridge
