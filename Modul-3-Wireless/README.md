@@ -456,108 +456,72 @@ Jika berhasil (muncul balasan *Reply from...*), maka konfigurasi Routing dan Wir
 
 *Catatan: Konfigurasi dasar seperti Reset Router, Login Winbox, dan Mengaktifkan wlan1 sama dengan praktikum pertama.*
 
-**Langkah 1: Konfigurasi Mode Wireless**
-**Untuk Router A:**
+### **Router A (Access Point)**
+
+**Langkah 1: Konfigurasi Mode Wireless AP Bridge**
 1. Klik dua kali pada interface **wlan1**, masuk ke tab **Wireless**.
 2. Ubah pengaturan berikut:
    - **Mode:** `ap bridge` (Point-to-Multipoint)
-   - **SSID:** `PointToMultipoint_KelompokXX`
+   - **SSID:** `PTMP_KelompokXX`
 3. Klik **Apply** lalu **OK**.
 
-![Konfigurasi AP Bridge Router A](images/AppBridge.png)
+![Konfigurasi AP Bridge Router A](images/wireless_ap_bridge.png)
 
-**Untuk Router B (dan C, jika ada):**
-1. Klik dua kali pada interface **wlan1**, masuk ke tab **Wireless**.
-2. Ubah pengaturan berikut:
-   - **Mode:** `station bridge`
-3. Klik tombol **Scan** lalu pilih **wlan1** dan **Start**.
-4. Cari jaringan WiFi dari Router A (`PointToMultipoint_KelompokXX`), lalu klik tombol **Connect**.
-5. Klik **Apply** lalu **OK**.
+**Langkah 2: Menambahkan Interface Bridge**
+1. Masuk ke menu **Bridge**.
+2. Pada tab **Bridges**, klik tombol **+** (Add).
+3. Beri nama `bridge1`, klik **Apply** lalu **OK**.
 
-![Scan Station Bridge](images/stationbridge_scan.png)
+![Tambah Bridge](images/add_bridge.jpeg)
 
-**Langkah 2: Konfigurasi IP Address & Routing**
-Lakukan konfigurasi IP Address untuk `wlan1`, IP Address untuk LAN (`ether2`), konfigurasi Routing Statis, pengaturan IP Laptop, dan Ping test seperti langkah-langkah pada praktikum **Point to Point** sebelumnya.
+**Langkah 3: Menambahkan Port ke Bridge**
+1. Pindah ke tab **Ports**, klik tombol **+** (Add).
+2. Tambahkan interface **wlan1** ke bridge `bridge1`.
+3. Tambahkan interface **ether2** (atau port yang terhubung ke laptop) ke bridge `bridge1`.
+
+![Tambah Port Bridge](images/add_port_bridge.jpeg)
+
+**Langkah 4: Konfigurasi IP Address pada Bridge**
+1. Masuk ke menu **IP** -> **Addresses**, klik **+**.
+2. Masukkan IP (misal: `192.168.10.1/24`) dan pilih interface `bridge1`.
+
+![Add IP Bridge](images/add_ip_bridge.png)
+
+**Langkah 5: Setup DHCP Server**
+1. Masuk ke menu **IP** -> **DHCP Server**.
+2. Klik **DHCP Setup** dan pilih interface `bridge1`.
+3. Ikuti wizard hingga selesai agar client mendapat IP otomatis.
+
+![DHCP Server Bridge](images/dhcp_server_bridge.png)
 
 ---
 
-## Praktikum 3: Wireless Bridge
+### **Router B (Station)**
 
-*Catatan: Konfigurasi dasar seperti Reset Router, Login Winbox, dan Mengaktifkan wlan1 sama dengan praktikum pertama.*
+**Langkah 1: Konfigurasi Mode Station Bridge & Scan**
+1. Klik dua kali pada interface **wlan1**, masuk ke tab **Wireless**.
+2. Ubah mode ke `station bridge`.
+3. Klik tombol **Scan**, pilih `wlan1`, klik **Start**.
+4. Pilih SSID dari Router A, lalu klik **Connect**.
 
-**Langkah 1: Konfigurasi Mode Wireless**
-**Untuk Router A:**
-1. Masuk ke interface **wlan1**, tab **Wireless**.
-2. Ubah pengaturan berikut:
-   - **Mode:** `bridge`
-   - **SSID:** `WirelessBridge_KelompokXX`
-3. Klik **Apply** lalu **OK**.
+![Scan Wireless](images/scan_wireless.jpeg)
 
-![Konfigurasi Bridge Router A](images/Bridge_RouterA.png)
+**Langkah 2: Menambahkan Interface Bridge & Port**
+1. Buat bridge baru (misal: `bridge-client`).
+2. Masukkan interface **wlan1** dan **ether2** ke dalam bridge tersebut.
 
-**Untuk Router B:**
-1. Masuk ke interface **wlan1**, tab **Wireless**.
-2. Ubah pengaturan berikut:
-   - **Mode:** `station pseudobridge`
-3. Klik tombol **Scan** lalu pilih **wlan1** dan **Start**.
-4. Cari jaringan WiFi dari Router A (`WirelessBridge_KelompokXX`), lalu klik tombol **Connect**.
-5. Klik **Apply** lalu **OK**.
+![Add Bridge Station](images/add_bridge.png)
+![Bridge Port Station](images/bridge_port.png)
 
-![Scan Station Pseudobridge](images/StationPsudo.png)
+**Langkah 3: Setup DHCP Client**
+1. Masuk ke menu **IP** -> **DHCP Client**.
+2. Klik **+**, pilih interface `bridge-client`.
+3. Pastikan status menjadi `bound` dan mendapatkan IP dari Router A.
 
-**Langkah 2: Konfigurasi IP Address wlan1 & ether2**
-1. Masuk ke menu **IP** -> **Addresses**.
-2. **Router A:**
-   - IP wlan1: `10.10.10.1/29`
-   - IP ether2: `192.168.10.2/24`
-3. **Router B:**
-   - IP wlan1: `10.10.10.2/29`
-   - IP ether2: `192.168.10.3/24`
+![Add DHCP Client](images/add_dhcp_client.jpeg)
+![IP DHCP Bound](images/ip_dhcp.jpeg)
 
-![IP Address Wireless Bridge A](images/IPADDRESS_WBA.png)
-![IP Address Wireless Bridge B](images/IPADRESS_WBB.png)
-
-**Langkah 3: Menambahkan Konfigurasi Bridge (Menggabungkan Port)**
-Tujuan langkah ini adalah menggabungkan interface `wlan1` dan `ether2` ke dalam satu "jembatan" sehingga jaringan lokal bisa langsung terhubung. Lakukan pada **Router A** dan **Router B**.
-1. Masuk ke menu **Bridge**.
-2. Pada tab **Bridges**, klik tombol **+** (Add).
-3. Beri nama `bridge1` (biarkan *default*), klik **Apply** lalu **OK**.
-
-![Tambah Bridge](images/Bridge.png)
-
-4. Pindah ke tab **Ports**, klik tombol **+** (Add).
-5. Tambahkan interface **wlan1** menggunakan *Bridge* `bridge1`.
-6. Tambahkan lagi interface **ether2** menggunakan *Bridge* `bridge1`.
-7. Klik **Apply** lalu **OK**.
-
-![Tambah Port Bridge](images/PortBridge.png)
-
-**Langkah 4: Tes Koneksi Antar Router**
-Buka **New Terminal** di Winbox.
-- Dari Router A, ping Wlan 1 Router B: `ping 10.10.10.2`
-- Dari Router B, ping Wlan 1 Router A: `ping 10.10.10.1`
-
-**Langkah 5: Konfigurasi IP Address Statis di Laptop**
-Atur alamat IP melalui Control Panel Windows.
-**Laptop Router A:**
-- IP Address: `192.168.10.5`
-- Subnet Mask: `255.255.255.0`
-- Default Gateway: `192.168.10.2` (IP Router A)
-- DNS Server: `8.8.8.8`
-
-**Laptop Router B:**
-- IP Address: `192.168.10.7`
-- Subnet Mask: `255.255.255.0`
-- Default Gateway: `192.168.10.3` (IP Router B)
-- DNS Server: `8.8.8.8`
-
-**Langkah 6: Uji Koneksi Antar Laptop (PING Test)**
-Buka **Command Prompt (CMD)**.
-- Dari Laptop 1 (Router A) ping ke Laptop 2 (Router B):
-  ```cmd
-  ping 192.168.10.7
-  ```
-Jika berhasil (*Reply*), maka jaringan Wireless Bridge telah berfungsi.
+---
 
 # TUGAS MODUL
 1. Simulasikan jaringan wireless antara tiga gedung: 
