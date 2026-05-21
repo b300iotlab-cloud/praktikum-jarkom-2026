@@ -523,6 +523,24 @@ Jika berhasil (muncul balasan *Reply from...*), maka konfigurasi Routing dan Wir
 
 ---
 
+### **Langkah 4: Pengujian Jaringan (Test & Debug)**
+
+1.  **Setting IP DHCP di Laptop**:
+    *   Buka **Control Panel** -> **Network and Sharing Center** -> **Change adapter settings**.
+    ![LAN setting](images/ping.png)
+    *   Klik kanan pada interface Ethernet, pilih **Properties**.
+    *   Pilih **Internet Protocol Version 4 (TCP/IPv4)** -> **Properties**.
+    *   Pilih **Obtain an IP address automatically** agar laptop menerima IP dari DHCP Server Router A.
+    ![DHCP setting](images/dhcp_local.png)
+2.  **Verifikasi Koneksi**:
+    *   Pastikan laptop di sisi Router A dan Router B sudah mendapatkan IP dalam satu subnet yang sama (misal: `192.168.10.1`).
+3.  **Ping Test**:
+    *   Buka **Command Prompt (CMD)**.
+    *   Coba lakukan ping dari laptop Router A ke IP Gateway Router B (misal: `ping 192.168.10.1`).
+    *   Coba lakukan ping antar laptop yang terhubung untuk memastikan jembatan (bridge) wireless berfungsi sempurna.
+
+---
+
 # TUGAS MODUL
 1. Simulasikan jaringan wireless antara tiga gedung: 
 - **Gedung Pusat**
