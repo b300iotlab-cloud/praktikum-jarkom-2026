@@ -134,9 +134,12 @@ Connection Tracking memberikan banyak keuntungan dalam pengelolaan dan pengamana
 4. Kontrol Lebih Detail terhadap Lalu Lintas Jaringan
 5. Mendeteksi dan Menghentikan Koneksi Tidak Sah
 
-<!-- # TAHAPAN PRAKTIKUM
+# TAHAPAN PRAKTIKUM
 
-## Praktikum 1: Konfigurasi Firewall & NAT Dasar
+## Praktikum 1: Firewall NAT Dasar
+
+**Langkah 0: buat topologi seperti berikut:**
+![topologi](images/baru/topologi.png)
 
 **Langkah 1: Reset Konfigurasi Router**
 Pastikan router telah di-reset ke kondisi awal (tanpa konfigurasi) agar tidak terjadi konflik pada konfigurasi berikutnya.
@@ -145,147 +148,240 @@ Pastikan router telah di-reset ke kondisi awal (tanpa konfigurasi) agar tidak te
 3. Ceklis pada kotak **No Default Configuration**.
 4. Klik tombol **Reset Configuration**.
 
-![Konfigurasi Reset Router](images/Reset_Router.png)
+![Reset Router](images/baru/1.png)
 
-**Langkah 2: Login ke Router**
-1. Buka kembali **Winbox**.
-2. Klik *MAC Address* atau IP default router pada tab **Neighbors**.
-3. Isi kolom *Login* dengan `admin` dan kosongkan kolom *Password*.
-4. Klik tombol **Connect**.
-
-![Login Router menggunakan Winbox](images/Login_Winbox.png)
-
-**Langkah 3: Konfigurasi DHCP Client pada Router A (ether1)**
-Sambungkan kabel internet ke port **ether1** pada Router A, lalu konfigurasi DHCP Client biar router dapet koneksi internet dari ISP.
+**Langkah 2: Konfigurasi DHCP Client pada Router A (ether1)**
+Sambungkan port **ether1** pada Router A ke jaringan Lab/Internet, lalu atur DHCP Client agar router mendapat IP otomatis.
 1. Masuk ke menu **IP** -> **DHCP Client**.
 2. Klik tombol **+** (Add) untuk menambahkan entri baru.
 3. Pilih **ether1** pada kolom **Interface**.
 4. Klik **Apply** lalu **OK**.
-5. Pastikan status koneksi sudah berubah menjadi **bound**.
+5. Pastikan status koneksi berubah menjadi **bound**.
 
-![Konfigurasi DHCP Client pada Router A](<images/konfigurasi/Screenshot from 2025-05-30 16-36-04.png>)
+![DHCP Client Router A](images/baru/2.png)
 
-**Langkah 4: Penambahan Alamat IP pada ether7**
-Tambahkan IP Address pada interface **ether7** sebagai jalur penghubung ke Switch lokal.
+**Langkah 3: Konfigurasi IP Address di Router A (ether2)**
+Tambahkan IP Address pada interface **ether2** Router A sebagai jalur penghubung ke Router B.
 1. Masuk ke menu **IP** -> **Addresses**.
-2. Klik tombol **+** (Add) untuk menambahkan IP.
-3. Masukkan **Address**: `192.168.10.1/24`.
-4. Pilih **Interface**: `ether7`.
+2. Klik tombol **+** (Add).
+3. Masukkan **Address**: `10.10.10.1/30`.
+4. Pilih **Interface**: `ether2`.
 5. Klik **Apply** lalu **OK**.
 
-![Menambahkan Alamat IP pada ether7](<images/konfigurasi/Screenshot from 2025-05-30 16-36-48.png>)
+![IP Address Router A](images/baru/3.png)
 
-**Langkah 5: Setup DHCP Server**
-Atur DHCP Server biar laptop praktikan yang terhubung bisa dapet IP Address secara otomatis.
-1. Masuk ke menu **IP** -> **DHCP Server** -> tab **DHCP**.
-2. Klik tombol **DHCP Setup**.
-3. Pilih interface **ether7** sebagai jalur pembagian IP, lalu klik **Next**.
-4. Klik **Next** terus untuk mengikuti petunjuk wizard sampai selesai (konfigurasi IP space, gateway, range IP, DNS, dan lease time biarkan *default* bawaan sistem).
-5. Setelah selesai, bakal muncul pop-up "*Setup has completed successfully*", klik **OK**.
+**Langkah 4: Konfigurasi Routing Statis di Router A**
+Atur routing statis agar Router A tahu rute menuju jaringan lokal PC Client yang ada di belakang Router B.
+1. Masuk ke menu **IP** -> **Routes**.
+2. Klik tombol **+** (Add).
+3. Isi **Dst. Address**: `192.168.10.0/24`.
+4. Isi **Gateway**: `10.10.10.2`.
+5. Klik **Apply** lalu **OK**.
 
-![Pengaturan DHCP Setup di MikroTik](<images/konfigurasi/Screenshot from 2025-05-30 17-21-05.png>)
+![Routing Router A](images/baru/4.png)
 
-**Langkah 6: Konfigurasi NAT**
-Bikin aturan NAT (Network Address Translation) biar semua perangkat di jaringan lokal bisa ikut internetan pakai IP publik router.
-1. Masuk ke menu **IP** -> **Firewall** -> tab **NAT**.
+**Langkah 5: Konfigurasi IP Address di Router B (ether2)**
+Pada Router B, tambahkan IP Address di **ether2** yang mengarah ke PC Client.
+1. Buka Winbox untuk Router B.
+2. Masuk ke menu **IP** -> **Addresses**.
+3. Klik tombol **+** (Add).
+4. Masukkan **Address**: `192.168.10.1/24`.
+5. Pilih **Interface**: `ether2`.
+6. Klik **Apply** lalu **OK**.
+7. Abaikan ip pada ether3.
+![IP ether2 Router B](images/baru/5.png)
+
+**Langkah 6: Konfigurasi IP Address di Router B (ether1)**
+Tambahkan juga IP Address di **ether1** Router B yang mengarah ke Router A.
+1. Masih di menu **IP** -> **Addresses**, klik tombol **+** (Add).
+2. Masukkan **Address**: `10.10.10.2/30`.
+3. Pilih **Interface**: `ether1`.
+4. Klik **Apply** lalu **OK**.
+
+![IP ether1 Router B](images/baru/6.png)
+
+**Langkah 7: Konfigurasi Default Route di Router B**
+Atur *default route* agar semua paket dari jaringan lokal Router B dikirim ke Router A (menuju internet).
+1. Masuk ke menu **IP** -> **Routes**.
+2. Klik tombol **+** (Add).
+3. Biarkan **Dst. Address** tetap `0.0.0.0/0`.
+4. Isi **Gateway**: `10.10.10.1`.
+5. Klik **Apply** lalu **OK**.
+
+![Default Route Router B](images/baru/7.png)
+
+**Langkah 8: Konfigurasi Firewall NAT di Router B**
+Bikin aturan NAT (Network Address Translation) di Router B agar jaringan lokal bisa ikut internetan pakai IP publik router.
+1. Kembali ke Winbox Router B , masuk ke menu **IP** -> **Firewall** -> tab **NAT**.
 2. Klik tombol **+** (Add) untuk membuat aturan baru.
 3. Pada tab **General**, ubah **Chain** menjadi `srcnat`.
-4. Geser ke tab **Action**, ubah **Action** menjadi `masquerade`.
-5. Klik **Apply** lalu **OK**.
-6. Buat tes koneksi, buka **New Terminal** di Winbox dan coba ping:
+4. Atur **Out. Interface** menjadi `ether1`.
+
+![NAT General](images/baru/8.png)
+
+5. Geser ke tab **Action**, ubah **Action** menjadi `masquerade`.
+6. Klik **Apply** lalu **OK**.
+
+![NAT Action](images/baru/9.png)
+
+7. Pastikan aturan NAT sudah masuk ke dalam daftar.
+
+![NAT Verify](images/baru/10_nat%20verify.png)
+
+**Langkah 9: Konfigurasi IP Statis di PC Client**
+Atur IP statis pada laptop/PC Client agar bisa terhubung ke Router B.
+1. Buka pengaturan Network (di Windows: **Control Panel -> Network and Sharing Center -> Change adapter settings**).
+2. Klik kanan pada Ethernet, pilih **Properties**.
+3. Buka **Internet Protocol Version 4 (TCP/IPv4)**.
+4. Pilih **Use the following IP address** dan isi:
+   - **IP address**: `192.168.10.2`
+   - **Subnet mask**: `255.255.255.0`
+   - **Default gateway**: `192.168.10.1`
+5. Isi DNS server (misal: `8.8.8.8`).
+6. Klik **OK**.
+
+![IP PC Client](images/baru/11_konfigurasi%20ip%20address%20client.png)
+
+**Langkah 10: Pengujian Jaringan dari PC Client**
+Coba tes ping dari Command Prompt (CMD) di PC Client untuk memastikan routing dan NAT sudah berjalan sukses.
+1. Buka CMD.
+2. Ping ke Gateway Router B: `ping 192.168.10.1`.
+3. Ping ke Gateway Router A: `ping 10.10.10.1`.
+4. Ping ke IP internet/Lab (contoh IP DHCP Router A): `ping 10.4.89.134`.
+5. Pastikan semuanya mendapatkan *Reply*!
+
+![Pengujian Ping](images/baru/12_pengujian%20percobaan%201.png)
+## Praktikum 2: Firewall Filter (Input vs Forward)
+*(Praktikum ini adalah lanjutan dari Praktikum 1. Pastikan konfigurasi sebelumnya sudah berjalan dengan baik)*
+
+**Langkah 1: Konfigurasi Firewall Filter (Chain Input)**
+Kita akan mencoba memblokir trafik *ping* dari Router A yang ditujukan ke Router B.
+1. Buka Winbox **Router B**.
+2. Masuk ke menu **IP** -> **Firewall** -> tab **Filter Rules**.
+3. Klik tombol **+** (Add) untuk membuat aturan baru.
+4. Pada tab **General**, atur:
+   - **Chain**: `input`
+   - **Src. Address**: `10.10.10.1` (IP Router A)
+   - **Protocol**: `icmp`
+
+   ![Filter Input General](images/baru/percobaan%202/1_input.png)
+
+5. Geser ke tab **Action**, atur **Action**: `drop`.
+
+   ![Filter Input Action](images/baru/percobaan%202/2_input.png)
+
+6. Klik **Apply** lalu **OK**. Pastikan aturan sudah ditambahkan ke dalam daftar.
+
+   ![Verify Input](images/baru/percobaan%202/3_verify_filter_input.png)
+
+**Langkah 2: Pengujian Chain Input dari Router A**
+1. Buka **New Terminal** di Winbox **Router A**.
+2. Lakukan ping ke IP Router B:
    ```bash
-   ping 8.8.8.8
+   ping 10.10.10.2
    ```
-   Pastikan hasilnya memunculkan balasan (*Reply*).
-
-![Aturan NAT - Tab General](<images/konfigurasi/Screenshot from 2025-05-30 16-37-46.png>)
-![Aturan NAT - Tab Action](<images/konfigurasi/Screenshot from 2025-05-30 16-37-56.png>)
-
-**Langkah 7: Konfigurasi Firewall Filtering**
-Tambahkan aturan filter (*Filter Rules*) pada firewall untuk mengamankan lalu lintas data di jaringan.
-1. Masuk ke menu **IP** -> **Firewall** -> tab **Filter Rules**.
-2. Klik tombol **+** (Add) untuk membuat aturan firewall baru.
-
-**Pemblokiran Ping (ICMP Test):**
-- Pada tab **General**, atur:
-  - **Chain**: `forward`
-  - **Protocol**: `icmp`
-  - **In. Interface**: `ether7`
-- Geser ke tab **Action**, atur **Action**: `drop`
-- Klik **Apply** lalu **OK**.
-
-**Pemblokiran Situs Web Berdasarkan Konten (Content Blocking):**
-1. Klik tombol **+** (Add) untuk membuat aturan baru.
-2. Pada tab **General**, atur:
-  - **Chain**: `forward`
-  - **Protocol**: `tcp`
-  - **Dst. Port**: `80,443` (port untuk akses HTTP dan HTTPS)
-  - **In. Interface**: `ether7`
-  - **Out. Interface**: `ether1`
-3. Pindah ke tab **Advanced**, isi kolom **Content**: `speedtest`
-4. Geser ke tab **Action**, atur **Action**: `drop`
-5. Klik **Apply** lalu **OK**.
-
-![Firewall Rule Pemblokiran ICMP - General](<images/konfigurasi/Screenshot from 2025-05-30 16-38-19.png>)
-![Firewall Rule Pemblokiran ICMP - Action](<images/konfigurasi/Screenshot from 2025-05-30 16-38-33.png>)
-![Firewall Rule Content Blocking - Advanced](<images/konfigurasi/Screenshot from 2025-05-30 16-38-46.png>)
-![Firewall Rule Content Blocking - Action](<images/konfigurasi/Screenshot from 2025-05-30 16-38-54.png>)
-
-**Langkah 8: Konfigurasi Bridge pada Router B**
-Bikin konfigurasi Bridge pada Router B biar fungsinya berubah menjadi *switch/hub* biasa.
-1. Masuk ke menu **Bridge** -> tab **Bridges**.
-2. Klik tombol **+** (Add) untuk membuat interface bridge baru.
-3. Kasih nama `bridge1`, lalu klik **Apply** dan **OK**.
-4. Pindah ke tab **Ports**, klik tombol **+** (Add) untuk memasukkan port jaringan ke dalam jembatan bridge:
-   - Tambahkan port yang terhubung ke laptop praktikan ke dalam `bridge1`.
-   - Tambahkan port yang terhubung ke Router A ke dalam `bridge1`.
-
-![Membuat Interface Bridge](<images/konfigurasi/Screenshot from 2025-05-30 16-40-44.png>)
-![Menambahkan Port ke Bridge](<images/konfigurasi/Screenshot from 2025-05-30 16-41-03.png>)
-
-**Langkah 9: Konfigurasi IP Address di Laptop**
-Atur konfigurasi jaringan laptop biar mendapatkan IP secara otomatis dari DHCP Server Router A.
-1. Di laptopmu, buka **Control Panel** -> **Network and Sharing Center** -> **Change adapter settings**.
-2. Klik kanan pada interface Ethernet yang tersambung, pilih **Properties**.
-3. Pilih **Internet Protocol Version 4 (TCP/IPv4)**, lalu klik **Properties**.
-4. Ceklis pada pilihan **Obtain an IP address automatically** dan **Obtain DNS server address automatically**.
-5. Buka **Command Prompt (CMD)** dan jalankan perintah ini buat memastikan laptopmu sudah dapet IP:
-   ```cmd
-   ipconfig
+   *Hasilnya harus Timeout, karena paket masuk yang ditujukan langsung ke Router B diblokir oleh chain input.*
+3. Lakukan ping ke IP PC Client yang berada di belakang Router B:
+   ```bash
+   ping 192.168.10.2
    ```
+   *Hasilnya harus Reply, karena paket ini hanya numpang lewat Router B (chain forward).*
 
-**Langkah 10: Uji Coba & Pengujian Jaringan**
-Coba tes semua konfigurasi firewall yang sudah dibuat tadi buat memastikan sistemnya bekerja dengan baik.
+   ![Hasil Ping Input](images/baru/percobaan%202/4_tes%20ping%20input.png)
 
-**Tes Pemblokiran Ping (ICMP):**
-1. Buka **Command Prompt (CMD)** pada laptop.
-2. Jalankan perintah ping ke DNS Google:
-   ```cmd
-   ping 8.8.8.8
+**Langkah 3: Konfigurasi Firewall Filter (Chain Forward)**
+Sekarang kita biarkan Router A nge-ping Router B, tapi memblokir Router A jika nge-ping PC Client.
+1. Di Winbox **Router B**, matikan (disable) aturan `input` sebelumnya. Klik aturan tersebut lalu tekan tombol **Silang (X)**.
+2. Klik tombol **+** (Add) untuk membuat aturan baru.
+3. Pada tab **General**, atur:
+   - **Chain**: `forward`
+   - **Src. Address**: `10.10.10.1`
+   - **Protocol**: `icmp`
+
+   ![Filter Forward General](images/baru/percobaan%202/1_forward.png)
+
+4. Geser ke tab **Action**, atur **Action**: `drop`.
+
+   ![Filter Forward Action](images/baru/percobaan%202/2_forward.png)
+
+5. Klik **Apply** lalu **OK**. Pastikan aturan forward aktif dan aturan input lama berstatus silang abu-abu (disable).
+
+   ![Verify Forward](images/baru/percobaan%202/3_verify%20filter%20forward.png)
+
+**Langkah 4: Pengujian Chain Forward dari Router A**
+1. Kembali ke **New Terminal** di **Router A**.
+2. Lakukan ping ke IP Router B:
+   ```bash
+   ping 10.10.10.2
    ```
-3. Selama firewall ICMP aktif, hasil ping kamu harusnya memunculkan tulisan **Request Timed Out (RTO)**.
-4. Sekarang coba nonaktifkan (disable) aturan blokir ICMP di Winbox dengan cara memilih rule tersebut di tab **Filter Rules**, lalu klik tombol **Silang Merah (X)** di bagian atas.
-5. Jalankan ulang perintah ping di CMD. Ping harusnya sukses dan memunculkan balasan *Reply from...*!
+   *Hasilnya harus Reply, karena aturan input sudah dimatikan.*
+3. Lakukan ping ke IP PC Client:
+   ```bash
+   ping 192.168.10.2
+   ```
+   *Hasilnya harus Timeout, karena paket yang melewati Router B menuju PC Client diblokir oleh chain forward.*
 
-**Tes Pemblokiran Situs (Content Blocking):**
-1. Buka *browser* pilihanmu, lalu coba akses situs web yang mengandung kata kunci `speedtest` (misalnya: `www.speedtest.net`).
-2. Selama firewall konten aktif, situs tersebut tidak akan bisa diakses dan browser bakal terus *loading* tanpa memunculkan halaman web. Ini tanda kalau firewall *drop* sudah bekerja dengan sukses!
-3. Coba matikan aturan konten di Winbox dengan mengklik tombol **Silang Merah (X)** pada tab **Filter Rules**.
-4. Lakukan *refresh* di browser. Situs speedtest harusnya langsung terbuka dengan normal!
+   ![Hasil Ping Forward](images/baru/percobaan%202/4_testing%20result%20forward.png)
+## Praktikum 3: Firewall NAT Forwarding (Port Forwarding)
+*(Praktikum ini menggunakan topologi dasar Praktikum 1. Sebelum mulai, pastikan kamu menghapus/disable semua aturan Firewall Filter Rules dari Praktikum 2 agar trafik tidak terblokir)*
+
+Pada praktikum ini, kita akan membuat PC Client bertindak sebagai Web Server. Karena PC Client berada di jaringan lokal (privat), komputer dari luar (seperti Router A) tidak bisa mengaksesnya secara langsung. Kita butuh **Destination NAT (DstNAT)** di Router B untuk membelokkan trafik yang masuk.
+
+**Langkah 1: Konfigurasi Port Forwarding (DstNAT) di Router B**
+Kita akan mengatur agar siapa pun yang mengakses IP Router B (`10.10.10.2`) melalui port `8080` akan diarahkan ke Web Server PC Client (`192.168.10.2`) port `80`.
+1. Buka Winbox **Router B**.
+2. Masuk ke menu **IP** -> **Firewall** -> tab **NAT**.
+3. Klik tombol **+** (Add) untuk menambahkan aturan baru.
+4. Pada tab **General**, atur:
+   - **Chain**: `dstnat`
+   - **Dst. Address**: `10.10.10.2` (IP Router B yang mengarah ke Router A)
+   - **Protocol**: `6 (tcp)`
+   - **Dst. Port**: `8080`
+
+   ![DstNAT General](images/baru/percobaan%203/dstnat1.png)
+
+5. Geser ke tab **Action**, atur:
+   - **Action**: `dst-nat`
+   - **To Addresses**: `192.168.10.2` (IP PC Client)
+   - **To Ports**: `80` (Port web server lokal)
+
+   ![DstNAT Action](images/baru/percobaan%203/dstnat2.png)
+
+6. Klik **Apply** lalu **OK**. Pastikan aturan tersebut sudah muncul di daftar NAT (berdampingan dengan aturan *masquerade* sebelumnya).
+
+   ![Verify DstNAT](images/baru/percobaan%203/3_verify%20dst-nat.png)
+
+**Langkah 2: Menjalankan Web Server di PC Client**
+Setelah aturannya siap, sekarang kita nyalakan web server-nya. Kita akan membuat web server sementara menggunakan Python.
+1. Buka **Command Prompt (CMD)** di PC Client.
+2. Ketikkan perintah berikut lalu tekan Enter:
+   ```bash
+   python -m http.server 80
+   ```
+3. Biarkan jendela CMD tetap terbuka agar server tetap menyala.
+
+   ![Web Server PC Client](images/baru/percobaan%203/5_server%20http.png)
+
+**Langkah 3: Pengujian Port Forwarding dari Router A**
+Sekarang kita posisikan Router A sebagai pihak dari luar yang ingin mengakses Web Server di PC Client.
+1. Buka **New Terminal** di Winbox **Router A**.
+2. Ketikkan perintah *fetch* untuk mengunduh halaman dari web server melalui IP Router B (port `8080`):
+   ```bash
+   /tool fetch url="http://10.10.10.2:8080" keep-result=no
+   ```
+3. Jika berhasil, statusnya akan menunjukkan proses *connecting* dan mengunduh file tanpa error. Artinya, trafik ke port 8080 Router B berhasil dibelokkan (NAT Forwarding) ke PC Client!
+
+   ![Fetch dari Router A](images/baru/percobaan%203/4_tool%20fetch.png)
+
+**Langkah 4: Mengamati Connection Tracking**
+Kamu juga bisa melihat bagaimana Router B melacak perubahan port dan alamat IP ini.
+1. Di Winbox **Router B**, masih di menu **IP** -> **Firewall**, buka tab **Connections**.
+2. Perhatikan daftar yang muncul saat Router A mencoba mengakses web server. Kamu akan melihat catatan koneksi dari IP `10.10.10.1` ke `10.10.10.2:8080` sedang berstatus *established/syn received*.
+
+   ![Connection Tracking DstNAT](images/baru/percobaan%203/5_connections%20dst-nat.png)
+
+3. perhatikan pada terminal router A, akan mendapatkan response dari web server PC Client. lalu cek ulang pada firewall filter connection router B.
+4. dokumentasikan hasil terminal router A dan firewall filter connection router B.  
 
 # TUGAS MODUL
-1. Buatlah topologi sederhana di Cisco Packet Tracer dengan:
-- 1 Router
-- 1 Switch
-- 3 PC (LAN)
-- 1 Server (Internet/Public)
-
-2. Konfigurasi NAT:
-Buat agar semua PC bisa mengakses Server menggunakan IP publik Router.
-
-3. Konfigurasi Firewall (ACL):
-- Izinkan hanya PC1 yang dapat mengakses Server.
-- Blokir PC2 dan PC3 dari mengakses Server.
-- Semua PC harus tetap bisa saling terhubung di LAN.
-
-Uji koneksi menggunakan ping dan dokumentasikan hasilnya. -->
+*(Akan menyusul)*
