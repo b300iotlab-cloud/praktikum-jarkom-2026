@@ -2,14 +2,15 @@
 1. buat konfigurasi pada server PNET Lab berdasarkan topologi berikut ini **menggunakan node mikrotik**:
 ![topologi](images/topology.jpg)
 
-2. lakukan konfigurasi singkat pada server PNET Lab dengan urutan berikut:\
+2. lakukan konfigurasi singkat menggunakan terminal pada server PNET Lab dengan urutan berikut:\
 a. konfigurasi IP Address.\
 b. konfigurasi DHCP Client agar terhubung dengan internet.\
 c. konfigurasi DHCP Server router untuk PC A dan PC B.\
 d. konfigurasi NAT agar PC A dan PC B bisa terhubung dengan internet.\
-e. konfigurasi routing statis agar PC A dan PC B bisa saling terhubung (ping).
+e. konfigurasi routing statis agar PC A dan PC B bisa saling terhubung (ping).\
+*tidak boleh konfigurasi menggunakan GUI atau winbox.
 
-3. lakukan test koneksi dengan ping antar pc dan koneksi internet dari masing masing pc.
+4. lakukan test koneksi dengan ping antar pc dan koneksi internet dari masing masing pc.
 
 lampirkan screenshot hasil topologi, konfigurasi, dan hasil test koneksi pada laporan.
 
