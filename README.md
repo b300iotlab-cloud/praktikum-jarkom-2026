@@ -45,8 +45,9 @@ Dalam modul-modul praktikum ini, kamu akan mempelajari dan mengimplementasikan b
 - NAT (Masquerade, Port Forwarding)
 - Connection Tracking
 - Proteksi router dari akses luar
+- DMZ
 
-### 5. **Konfigurasi OSPF Multivendor**
+### 5. **Konfigurasi Vlan, OSPF Multivendor**
 
 - Huawei
 - Cisco
@@ -65,6 +66,8 @@ Nah, untuk melakukan praktikum ini, kamu perlu menginstal aplikasi berikut:
   Link Download : https://www.netacad.com/resources/lab-downloads?courseLang=en-US
 - **Wireshark**
   Alat analisis paket jaringan yang digunakan untuk memantau dan mempelajari lalu lintas jaringan.
+- **Pnetlab**
+  Software buat simulasi jaringan dengan menjalankan os asli dari perangkat router.
 
 ---
 
