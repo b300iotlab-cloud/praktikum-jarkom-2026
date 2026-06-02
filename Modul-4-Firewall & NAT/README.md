@@ -378,11 +378,503 @@ Sekarang kita posisikan Router A sebagai pihak dari luar yang ingin mengakses We
 Kamu juga bisa melihat bagaimana Router B melacak perubahan port dan alamat IP ini.
 1. Di Winbox **Router B**, masih di menu **IP** -> **Firewall**, buka tab **Connections**.
 2. Perhatikan daftar yang muncul saat Router A mencoba mengakses web server. Kamu akan melihat catatan koneksi dari IP `10.10.10.1` ke `10.10.10.2:8080` sedang berstatus *established/syn received*.
-
-   ![Connection Tracking DstNAT](images/baru/percobaan%203/5_connections%20dst-nat.png)
-
 3. perhatikan pada terminal router A, akan mendapatkan response dari web server PC Client. lalu cek ulang pada firewall filter connection router B.
 4. dokumentasikan hasil terminal router A dan firewall filter connection router B.  
 
-# TUGAS MODUL
-*(Akan menyusul)*
+
+   ![Connection Tracking DstNAT](images/baru/percobaan%203/5_connections%20dst-nat.png)
+
+---
+
+# Tugas Modul
+
+# 1. Topologi Jaringan
+![Topologi Modul 4](images/Topologi4baru.png)
+
+# 2. Penjelasan Perangkat
+
+| No. | Perangkat | Fungsi |
+|:---:|-----------|--------|
+| 1 | Cloud / Jaringan Lab | Menghubungkan simulasi PNETLab ke jaringan lab atau internet |
+| 2 | MikroTik ISP | Berperan sebagai router ISP atau simulasi jaringan luar |
+| 3 | FortiGate | Berperan sebagai firewall utama yang mengatur akses antara WAN, LAN, dan DMZ |
+| 4 | Cisco Router | Berperan sebagai router internal menuju jaringan LAN |
+| 6 | Client LAN **Tinycore Linux** | Client internal yang berada di belakang Cisco Router |
+| 7 | Client WAN **Tinycore Linux**| Client dari sisi luar/internet untuk menguji akses ke server DMZ |
+| 8 | Ubuntu Server DMZ | Server web yang diletakkan di zona DMZ |
+
+# 3. Segmentasi Jaringan
+
+Pada topologi ini terdapat beberapa segment jaringan:
+
+| Segment | Network | Keterangan |
+|---------|---------|-----------|
+| Jaringan Lab / Internet | DHCP dari jaringan lab | Sumber koneksi luar |
+| ISP ke FortiGate | 10.10.10.0/30 | Link antara MikroTik ISP dan FortiGate |
+| Client WAN | 172.16.100.0/24 | Jaringan client dari sisi luar |
+| FortiGate ke Cisco | 10.20.20.0/30 | Link antara FortiGate dan Cisco Router |
+| LAN | 192.168.10.0/24 | Jaringan internal client |
+| DMZ | 192.168.20.0/24 | Jaringan server DMZ |
+
+# 4. Tabel IP Address
+
+| Perangkat | Interface | IP Address | Gateway | Keterangan |
+|:----------|:----------|:-----------|:--------|:-----------|
+| MikroTik ISP | ether1 | DHCP Client | DHCP dari jaringan lab | Terhubung ke Cloud / jaringan lab |
+| MikroTik ISP | ether2 | `10.10.10.1/30` | - | Terhubung ke FortiGate port1 |
+| MikroTik ISP | ether3 | `172.16.100.1/24` | - | Gateway untuk Client-WAN |
+| FortiGate | port1 | `10.10.10.2/30` | `10.10.10.1` | Interface WAN |
+| FortiGate | port2 | `10.20.20.1/30` | - | Interface INSIDE ke Cisco |
+| FortiGate | port3 | `192.168.20.1/24` | - | Interface DMZ |
+| Cisco Router | G0/0 | `10.20.20.2/30` | - | Terhubung ke FortiGate port2 |
+| Cisco Router | G0/1 | `192.168.10.1/24` | - | Gateway LAN |
+| Client LAN **Tinycore Linux**| eth0 | `192.168.10.10/24` | `192.168.10.1` | Client internal |
+| Client WAN **Tinycore Linux**| eth0 | `172.16.100.10/24` | `172.16.100.1` | Client luar |
+| Ubuntu Server DMZ | eth0 / ens3 | `192.168.20.10/24` | `192.168.20.1` | Web server DMZ |
+
+# 5. Instruksi Pengerjaan
+
+
+Dikerjakan secara **berkelompok**. Output wajib berupa file `README.md` di GitHub dalam folder `LA/`.
+
+---
+
+## 5.1 Persiapan
+
+1. Buat workspace baru di PNETLab sesuai kelompok.
+2. Buat topologi sesuai gambar di modul, pastikan semua node terhubung dan di-start.
+3. Node berat (Ubuntu Server, FortiGate, Cisco Router) tunggu **3–5 menit** booting. Tekan `Enter` jika terminal belum merespons.
+
+---
+
+## 5.2 Login Perangkat
+
+| Perangkat | Username | Password |
+|-----------|----------|----------|
+| FortiGate | `admin` | *(kosong)* |
+| Ubuntu Server | `root` | `root` |
+| MikroTik | default image | default image |
+| Cisco Router | — | — |
+| Tiny Core Linux | default image | default image |
+
+---
+
+## 5.3 Konfigurasi MikroTik ISP
+
+| Interface | IP |
+|-----------|----|
+| ke Cloud/lab | DHCP Client |
+| ke FortiGate | `10.10.10.1/30` |
+| ke Client WAN | `172.16.100.1/24` |
+
+Yang harus dikonfigurasi: DHCP Client, IP tiap interface, NAT masquerade, route ke LAN (`192.168.10.0/24`) dan DMZ (`192.168.20.0/24`) via FortiGate.
+
+**Target:** MikroTik bisa ping ke FortiGate `10.10.10.2`.
+
+---
+
+## 5.4 Konfigurasi FortiGate
+
+| Interface | Peran | IP |
+|-----------|-------|----|
+| `port1` | WAN | `10.10.10.2/30` |
+| `port2` | INSIDE | `10.20.20.1/30` |
+| `port3` | DMZ | `192.168.20.1/24` |
+
+Yang harus dikonfigurasi:
+- Default route → `10.10.10.1`
+- Static route → LAN `192.168.10.0/24` via `10.20.20.2`
+- Address object: LAN, Server DMZ, Client WAN
+- Policy: `LAN_to_WAN` (NAT on), `LAN_to_DMZ` (NAT off), `WAN_to_DMZ_HTTP`
+- VIP / port forwarding: WAN `10.10.10.2` → Server DMZ `192.168.20.10`
+
+**Target:** Client LAN bisa akses internet & DMZ. Client WAN bisa akses web DMZ via `http://10.10.10.2`.
+
+---
+
+## 5.5 Konfigurasi Cisco Router
+
+| Interface | IP |
+|-----------|----|
+| ke FortiGate | `10.20.20.2/30` |
+| ke LAN | `192.168.10.1/24` |
+
+Yang harus dikonfigurasi: IP tiap interface, `no shutdown`, default route → `10.20.20.1`.
+
+**Target:** Bisa ping ke FortiGate `10.20.20.1` dan Server DMZ `192.168.20.10`.
+
+---
+
+## 5.6 Konfigurasi Client LAN *(Tiny Core Linux)*
+
+| Parameter | Nilai |
+|-----------|-------|
+| IP | `192.168.10.10/24` |
+| Gateway | `192.168.10.1` |
+| DNS | `8.8.8.8` |
+
+**Target:** Ping ke router, FortiGate, dan DMZ. Akses `http://192.168.20.10`.
+
+---
+
+## 5.7 Konfigurasi Client WAN *(Tiny Core Linux)*
+
+| Parameter | Nilai |
+|-----------|-------|
+| IP | `172.16.100.10/24` |
+| Gateway | `172.16.100.1` |
+| DNS | `8.8.8.8` |
+
+**Target:** Akses `http://10.10.10.2`. Tidak bisa ping ke LAN `192.168.10.10` atau IP asli DMZ `192.168.20.10`.
+
+---
+
+## 5.8 Konfigurasi Ubuntu Server DMZ
+
+| Parameter | Nilai |
+|-----------|-------|
+| IP | `192.168.20.10/24` |
+| Gateway | `192.168.20.1` |
+| DNS | `8.8.8.8` |
+
+Yang harus dikonfigurasi: IP statis, install **Nginx**, ubah halaman default dengan format:
+
+```
+Tumod_4_DMZ_Firewall_No.kel-nama
+```
+
+Contoh: `Tumod_4_DMZ_Firewall_03-Kelompok3`
+
+**Target:** Nginx aktif, halaman dapat diakses dari Client LAN dan Client WAN.
+
+---
+
+
+## 5.9 Penyimpanan Konfigurasi
+
+- Cisco Router: `copy run start`
+- MikroTik: export konfigurasi
+- FortiGate: backup via CLI atau GUI
+- Ubuntu Server: pastikan IP statis tersimpan dan Nginx aktif otomatis (`systemctl enable nginx`)
+- Save workspace PNETLab
+
+---
+
+## 5.10 Dokumentasi
+
+Simpan laporan di `LA/README.md` dengan isi:
+
+- Topologi jaringan
+- Tabel IP address
+- Konfigurasi tiap perangkat *(+ screenshot)*
+- Hasil pengujian *(+ screenshot)*
+- Analisis dan kesimpulan
+
+> Screenshot wajib menampilkan nama perangkat atau command yang digunakan.
+
+# 6. Hasil yang diharapkan 
+### 1. Pengujian client lan ke gateway cisco
+![lan to cisco](images/lan_to_cisco.png)
+
+### 2. Pengujian client lan ke fortigate
+![lan to fortigate ](images/lan_to_fortigate.png)
+
+### 3. Pengujian client lan ke DMZ
+![lan to dmz](images/lan_to_dmz.png)
+
+### 4. Pengujian client  lan akses ip dmz
+![lan akses web dmz](images/lan_access_dmz.png)
+
+### 5. Pengujian client wan ping ke isp mikrotik 
+![client wan ping isp mikrotik](images/client_wan_to_mikrotik.png)
+
+### 6. Penujian client wan ping ke fortigate
+![client wan to fortigate](images/client_wan_to_fortigate.png)
+
+### 7. Pengujian client wan akses http://10.10.10.2 harus muncul halaman web server.
+![client wan akses web dmz](images/client_wan_access_dmz.png)
+
+### 8. Pengujian client wan ping client lan 
+![wan ping lan](images/wan_ping_lan.png)
+
+### 9. Pengujian client wan ping IP asli DMZ
+![wan ping dmz](images/wan_ping_dmz.png)
+
+### 10. Pengujian server dmz ping lan 
+![dmz ping lan](images/dmz_ping_lan.png)
+
+
+
+
+# 7. Troubleshooting
+#### 1. Jika GUI Tinycore tidak muncul ganti console menjadi VNC, Ram 4096Mb, dan CPU 2.
+#### 2. Jika terminal ubuntu server tidak muncul, ganti console menjadi telnet.
+#### 3. Untuk set ip address pada tinycore, masuk ke Control Panel > Network > Konfigurasi IP Address yang sesuai.
+#### 4. Supaya Router Mikrotik dapat IP Dhcp-Client dari lab, pada saat menghubungkan network dengan mikrotik pilih ether 1.
+#### 5. Jika firewall masih tembus, cek konfigurasi pada Fortinet.
+#### 
+
+
+# 8. Command dan Konfigurasi Dasar pada Perangkat Cisco dan Fortinet
+
+Dokumentasi command dasar untuk konfigurasi perangkat jaringan Cisco IOS/IOS-XE dan Fortinet FortiGate.
+
+---
+
+## 📌 Daftar Isi
+
+- [Cisco IOS / IOS-XE](#cisco-ios--ios-xe)
+  - [Ganti Hostname](#1-ganti-hostname)
+  - [Set IP Address](#2-set-ip-address)
+  - [Simpan Konfigurasi](#3-simpan-konfigurasi)
+  - [Routing Statis](#4-routing-statis)
+- [Fortinet FortiGate](#fortinet-fortigate)
+  - [Ganti Hostname](#1-ganti-hostname-1)
+  - [Set IP Address](#2-set-ip-address-1)
+  - [Simpan Konfigurasi](#3-simpan-konfigurasi-1)
+  - [Routing Statis](#4-routing-statis-1)
+- [Tips Umum](#tips-umum)
+
+---
+
+## Cisco IOS / IOS-XE
+
+> Berlaku untuk Router dan Switch Cisco yang menggunakan IOS atau IOS-XE.
+
+### Urutan masuk ke mode konfigurasi
+
+```
+Router> enable
+Router# configure terminal
+Router(config)#
+```
+
+---
+
+### 1. Ganti Hostname
+
+```
+Router(config)# hostname NamaBaru
+```
+
+**Contoh:**
+
+```
+Router(config)# hostname Core-SW-01
+Core-SW-01(config)#
+```
+
+---
+
+### 2. Set IP Address
+
+```
+Router(config)# interface GigabitEthernet0/0
+Router(config-if)# ip address 192.168.1.1 255.255.255.0
+Router(config-if)# no shutdown
+Router(config-if)# exit
+```
+
+> **Catatan:**
+> - Ganti `GigabitEthernet0/0` sesuai interface yang tersedia di perangkat.
+> - Perintah `no shutdown` wajib dijalankan karena interface Cisco default dalam kondisi **shutdown (off)**.
+> - Gunakan `show ip interface brief` untuk memverifikasi IP yang sudah di-set.
+
+**Verifikasi:**
+
+```
+Router# show ip interface brief
+```
+
+---
+
+### 3. Simpan Konfigurasi
+
+```
+Router# copy running-config startup-config
+```
+
+Atau menggunakan shortcut:
+
+```
+Router# write memory
+```
+
+Atau singkatnya:
+
+```
+Router# wr
+```
+
+> **Catatan:** Jika tidak disimpan, konfigurasi akan hilang setelah perangkat di-restart.
+
+---
+
+### 4. Routing Statis
+
+Sintaks dasar:
+
+```
+Router(config)# ip route [network-tujuan] [subnet-mask] [next-hop / exit-interface]
+```
+
+**Contoh — via next-hop IP:**
+
+```
+Router(config)# ip route 192.168.2.0 255.255.255.0 10.0.0.2
+```
+
+**Contoh — via exit interface:**
+
+```
+Router(config)# ip route 192.168.2.0 255.255.255.0 GigabitEthernet0/1
+```
+
+**Default route (gateway of last resort):**
+
+```
+Router(config)# ip route 0.0.0.0 0.0.0.0 10.0.0.1
+```
+
+> **Catatan:**
+> - `0.0.0.0 0.0.0.0` berarti "semua tujuan yang tidak dikenal" — digunakan sebagai default gateway.
+> - Tambahkan parameter `permanent` di akhir agar route tidak hilang saat interface down.
+> - Administrative Distance (AD) default static route Cisco adalah **1**.
+
+**Verifikasi:**
+
+```
+Router# show ip route
+Router# show ip route static
+```
+
+---
+
+## Fortinet FortiGate
+
+> Berlaku untuk Firewall/UTM FortiGate yang menggunakan FortiOS CLI.
+
+### Struktur perintah FortiGate
+
+Semua konfigurasi FortiGate berada dalam blok `config ... end`. Gunakan `show` untuk verifikasi setelah konfigurasi.
+
+---
+
+### 1. Ganti Hostname
+
+```
+FortiGate # config system global
+FortiGate (global) # set hostname NamaBaru
+FortiGate (global) # end
+```
+
+**Contoh:**
+
+```
+FortiGate # config system global
+FortiGate (global) # set hostname FG-HQ-01
+FG-HQ-01 (global) # end
+```
+
+---
+
+### 2. Set IP Address
+
+```
+FortiGate # config system interface
+FortiGate (interface) # edit port1
+FortiGate (port1) # set ip 192.168.1.1 255.255.255.0
+FortiGate (port1) # set allowaccess ping https ssh
+FortiGate (port1) # next
+FortiGate (interface) # end
+```
+
+> **Catatan:**
+> - Ganti `port1` sesuai interface yang digunakan.
+> - `allowaccess` menentukan protokol manajemen yang diizinkan masuk ke interface. Opsi umum: `ping`, `https`, `ssh`, `http`, `telnet`.
+> - Gunakan `show system interface port1` untuk verifikasi.
+
+**Verifikasi:**
+
+```
+FortiGate # show system interface port1
+```
+
+---
+
+### 3. Simpan Konfigurasi
+
+FortiGate **menyimpan konfigurasi secara otomatis** setiap kali perintah `end` atau `next` dijalankan. Namun, untuk backup manual ke flash/USB:
+
+```
+FortiGate # execute backup config flash backup.conf
+```
+
+Backup juga dapat dilakukan melalui GUI:
+
+```
+Dashboard → System → Backup
+```
+
+---
+
+### 4. Routing Statis
+
+```
+FortiGate # config router static
+FortiGate (static) # edit 1
+FortiGate (1) # set dst 192.168.2.0 255.255.255.0
+FortiGate (1) # set gateway 10.0.0.2
+FortiGate (1) # set device port2
+FortiGate (1) # next
+FortiGate (static) # end
+```
+
+**Default route:**
+
+```
+FortiGate # config router static
+FortiGate (static) # edit 1
+FortiGate (1) # set dst 0.0.0.0 0.0.0.0
+FortiGate (1) # set gateway 10.0.0.1
+FortiGate (1) # set device port1
+FortiGate (1) # next
+FortiGate (static) # end
+```
+
+> **Catatan:**
+> - `edit 1` adalah nomor urut route (sequence number). Gunakan angka berbeda untuk setiap route baru.
+> - `set device` wajib diisi dengan nama interface yang menuju ke gateway.
+> - `set dst 0.0.0.0 0.0.0.0` digunakan sebagai default route (gateway of last resort).
+> - Tambahkan `set distance [1-255]` untuk mengatur administrative distance jika diperlukan.
+
+**Verifikasi:**
+
+```
+FortiGate # get router info routing-table all
+FortiGate # get router info routing-table static
+```
+
+---
+
+## Tips Umum
+
+| Hal | Cisco | FortiGate |
+|-----|-------|-----------|
+| Masuk mode config | `enable` → `conf t` | Langsung dari prompt |
+| Keluar dari mode config | `end` atau `exit` | `end` atau `next` |
+| Simpan config | `copy run start` atau `wr` | Otomatis tersimpan |
+| Lihat konfigurasi aktif | `show running-config` | `show full-configuration` |
+| Lihat IP interface | `show ip interface brief` | `get system interface physical` |
+| Verifikasi hostname | `show version` | `get system status` |
+| Lihat routing table | `show ip route` | `get router info routing-table all` |
+| Hapus static route | `no ip route [dst] [mask] [gw]` | `config router static` → `delete [seq]` |
+
+---
+
+> **Referensi:**
+> - [Cisco IOS Command Reference](https://www.cisco.com/c/en/us/support/ios-nx-os-software/ios-15/products-command-reference-list.html)
+> - [FortiGate CLI Reference](https://docs.fortinet.com/document/fortigate/latest/cli-reference)
+
+
+
