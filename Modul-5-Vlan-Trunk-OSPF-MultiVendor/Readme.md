@@ -1,3 +1,17 @@
+# Daftar Isi
+- [Tugas Pendahuluan 1](#tugas-pendahuluan-1)
+- [Tugas Pendahuluan 2](#tugas-pendahuluan-2)
+- [Dasar Teori](#dasar-teori)
+- [Topologi Jaringan](#topologi-jaringan)
+- [Praktikum 1 Konfigurasi Cisco Switch](#praktikum-1-konfigurasi-cisco-switch)
+- [Praktikum 2 Konfigurasi Cisco Router](#praktikum-2-konfigurasi-cisco-router)
+- [Praktikum 3 Konfigurasi Huawei Router dan IP Address Antarrouter](#praktikum-3-konfigurasi-huawei-router-dan-ip-address-antarrouter)
+- [Praktikum 4 Konfigurasi OSPF Multivendor dan OSPF Cost](#praktikum-4-konfigurasi-ospf-multivendor-dan-ospf-cost)
+- [Praktikum 5 Pengujian Failover OSPF](#praktikum-5-pengujian-failover-ospf)
+- [Tugas Modul](#tugas-modul)
+
+---
+
 # Tugas Pendahuluan 1
 ## 1.1 Topologi Jaringan
 ![tupen](images/tupen/topologitupen5.png)
@@ -66,6 +80,12 @@ OSPF bekerja melalui beberapa tahapan sebagai berikut:
 ## 1.1 Topologi Jaringan
 ![topologi jaringan praktikum modul 5](images/praktikum/topologi.png)
 
+> [!WARNING]
+> **DISCLAIMER:**
+> Ada kesalahan pada dua link jalur cisco-huawei di topologi di atas. Seharusnya:
+> - `g0/0` terhubung ke `ethernet 1/0/4`
+> - `g0/3` terhubung ke `ethernet 1/0/0`
+
 ## 1.2 Tabel Addressing Vlan 
 
 | VLAN ID | Nama VLAN | Network         | Gateway      | Keterangan  |
@@ -100,6 +120,13 @@ OSPF bekerja melalui beberapa tahapan sebagai berikut:
 
 
 # Praktikum 1 Konfigurasi Cisco Switch
+
+> [!WARNING]
+> **DISCLAIMER:**
+> - Harus teliti dalam melakukan konfigurasi.
+> - Saat menyalakan router/switch di awal mungkin butuh waktu agak lama.
+> - Ketik perintah `do wr` (jika sedang di dalam mode config) atau `wr` (jika di luar mode config) setelah selesai konfigurasi untuk menyimpan pengaturan.
+
 ## Tujuan
 Pada step pertama ini, Cisco Switch akan dikonfigurasi untuk:
 1. Membuat VLAN 10, 20, 30, dan 40.
@@ -221,6 +248,12 @@ Praktikum 1 selesai jika konfigurasi memenuhi berikut:
 
 
 # Praktikum 2 Konfigurasi Cisco Router
+
+> [!WARNING]
+> **DISCLAIMER:**
+> - Harus teliti dalam melakukan konfigurasi.
+> - Saat menyalakan router/switch di awal mungkin butuh waktu agak lama.
+> - Ketik perintah `do wr` (jika sedang di dalam mode config) atau `wr` (jika di luar mode config) setelah selesai konfigurasi untuk menyimpan pengaturan.
 
 ## Tujuan
 1. Cisco Router sebagai gateway untuk semua vlan
@@ -426,6 +459,11 @@ Praktikum 2 berhasil jika memenuhi sebagai berikut:
 8. PC antar-VLAN dapat saling ping melalui Cisco Router.
 
 # Praktikum 3 Konfigurasi Huawei Router dan IP Address Antarrouter
+
+> [!WARNING]
+> **DISCLAIMER:**
+> - Config HUAWEI (Praktikum 3): Untuk menghapus ketikan (Backspace), gunakan kombinasi `CTRL + H`.
+> - Jika konfigurasi sudah di-commit, indikator di terminal akan berubah menjadi `~` (tilde), bukan `*` (yang menandakan masih dalam proses edit/belum disave).
 
 ##  Tujuan
 
@@ -664,7 +702,12 @@ Mikrotik harus bisa ping ke cisco dan huawei.
 7. Link Cisco ↔ MikroTik aktif.
 8. Semua router dapat ping ke router tetangga langsung.
 
-# 4. Praktikum 4 Konfigurasi OSPF Multivendor dan OSPF Cost
+#  Praktikum 4 Konfigurasi OSPF Multivendor dan OSPF Cost
+
+> [!WARNING]
+> **DISCLAIMER:**
+> - Routing Interface Huawei pastikan harus sesuai dengan konfigurasi masing-masing!
+
 ## Tujuan
 Pada praktikum ini, praktikan mengkonfigurasi routing dinamis menggunakan OSPF pada tiga perangkat berbeda:
 1. Cisco Router
