@@ -349,12 +349,12 @@ exit
 ### 9. Konfigurasi IP Static pada VPCS untul vlan 30 dan 40
 PC Vlan 30 :
 ```
-ip address 192.168.30.10/24 192.168.30.1
+ip 192.168.30.10/24 192.168.30.1
 
 ```
 PC Vlan 40 :
 ```
-ip address 192.168.40.10 192.168.40.1
+ip 192.168.40.10/24 192.168.40.1
 ```
 
 PC Vlan 10 dan 20 menggunakan dhcp:
