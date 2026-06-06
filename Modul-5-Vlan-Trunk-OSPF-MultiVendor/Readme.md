@@ -644,6 +644,7 @@ show ip interface brief
 ```
 Pastikan ip pada interface berikut sudah aktif:
 ![ip cisco](images/praktikum/ipciscofinal.png)
+
 **Huawei Router**
 ```
 display ip interface brief
