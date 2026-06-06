@@ -126,6 +126,7 @@ OSPF bekerja melalui beberapa tahapan sebagai berikut:
 > - Harus teliti dalam melakukan konfigurasi.
 > - Saat menyalakan router/switch di awal mungkin butuh waktu agak lama.
 > - Ketik perintah `do wr` (jika sedang di dalam mode config) atau `wr` (jika di luar mode config) setelah selesai konfigurasi untuk menyimpan pengaturan.
+> - Ketika masuk Cicso Switch ada tulisan `would u like to enter the initial configuration dialog [yes/no]?` pilih `no` lalu enter.
 
 ## Tujuan
 Pada step pertama ini, Cisco Switch akan dikonfigurasi untuk:
@@ -254,6 +255,7 @@ Praktikum 1 selesai jika konfigurasi memenuhi berikut:
 > - Harus teliti dalam melakukan konfigurasi.
 > - Saat menyalakan router/switch di awal mungkin butuh waktu agak lama.
 > - Ketik perintah `do wr` (jika sedang di dalam mode config) atau `wr` (jika di luar mode config) setelah selesai konfigurasi untuk menyimpan pengaturan.
+> - Ketika masuk Cicso Router ada tulisan `would u like to enter the initial configuration dialog [yes/no]` pilih `no` lalu enter.
 
 ## Tujuan
 1. Cisco Router sebagai gateway untuk semua vlan
@@ -463,6 +465,7 @@ Praktikum 2 berhasil jika memenuhi sebagai berikut:
 > [!WARNING]
 > **DISCLAIMER:**
 > - Config HUAWEI (Praktikum 3): Untuk menghapus ketikan (Backspace), gunakan kombinasi `CTRL + H`.
+> - Ketika booting Router Huawei masuk ke `root@debian:/opt/vsrp#` bukan ke `<Huawei>`, matikan Router Huawei, klik kanan pilih wipe, lalu start lagi.
 > - Jika konfigurasi sudah di-commit, indikator di terminal akan berubah menjadi `~` (tilde), bukan `*` (yang menandakan masih dalam proses edit/belum disave).
 
 ##  Tujuan
