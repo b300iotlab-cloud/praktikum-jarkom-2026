@@ -798,6 +798,8 @@ Hasil kemungkinan kosong karena router tetangga masih belum dikonfigurasi
 show ip protocols
 
 ```
+Jika ip vlan tidak muncul, simpan konfigurasi cisco router dengan perintah **wr**, lalu ketik perintah **reload**. Tunggu proses restart sampai selesai, lalu cek lagi.
+
 Pastikan network yang akan diiklankan sudah ada:
 ![network ospf](images/praktikum/networkospfcisco.png)
 
@@ -951,6 +953,7 @@ Cek semua route ospf:
 ```
 show ip route ospf
 ```
+Hasil kemungkinan berbeda dengan modul, yang penting ip antar router sudah ada. Kalo ip antar router sudah ada bisa dilanjutkan. 
 ![all route ospf cisco](images/praktikum/allrouteospfcisco.png)
 
 **Huawei Router**
