@@ -906,7 +906,7 @@ MikroTik mendapatkan route OSPF menuju VLAN 10, 20, 30, 40 dan LAN Huawei 192.16
 ### 6. Verifikasi OSPF Neighbor
 **Cisco Router**
 ```
-show ip ospf neigbor
+show ip ospf neighbor
 ```
 Hasil yang diharapkan:
 ```
