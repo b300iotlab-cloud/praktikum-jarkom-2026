@@ -607,7 +607,7 @@ Simpan laporan di `LA/README.md` dengan isi:
 
 
 # 7. Troubleshooting
-#### 1. Jika GUI Tinycore tidak muncul ganti console menjadi VNC, Ram 4096Mb, dan CPU 2.
+#### 1. Jika GUI Tinycore tidak muncul ganti console menjadi VNC, Ram 4096Mb, dan CPU 2. Jika masih tidak muncul, matikan Tinycore Linux klik panan pilih wipe,lalu start lagi.
 #### 2. Jika terminal ubuntu server tidak muncul, ganti console menjadi telnet.
 #### 3. Untuk set ip address pada tinycore, masuk ke Control Panel > Network > Konfigurasi IP Address yang sesuai.
 #### 4. Supaya Router Mikrotik dapat IP Dhcp-Client dari lab, pada saat menghubungkan network dengan mikrotik pilih ether 1.
